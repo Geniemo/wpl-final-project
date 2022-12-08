@@ -26,6 +26,7 @@ public class QuizService {
     private final FileService fileService;
     private final QuizImageRepository quizImageRepository;
 
+    @Transactional
     public Message upload(UploadQuizRequest uploadQuizRequest) {
         Quiz quiz = Quiz.createQuiz(uploadQuizRequest.getTitle(), uploadQuizRequest.getDescription(), uploadQuizRequest.getAnswer());
         quizRepository.save(quiz);
