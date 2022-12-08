@@ -23,7 +23,7 @@ public class QuizImage {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "file_id")
     private File file;
 
