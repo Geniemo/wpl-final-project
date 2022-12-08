@@ -27,7 +27,7 @@ spring:
 
 app:
   FileProperties:
-    root: /files
+    root: /wpl/files
 
 logging:
   level:
