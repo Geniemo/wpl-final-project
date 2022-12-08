@@ -4,10 +4,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import wpl.server.payload.dto.QuizDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,5 +34,13 @@ public class Quiz {
         quiz.setDescription(description);
         quiz.setAnswer(answer);
         return quiz;
+    }
+
+    public static QuizDto convertToDto(Quiz quiz) {
+        return new QuizDto(quiz.getId(), quiz.getTitle(), quiz.getDescription(),
+                quiz.getImages()
+                        .stream()
+                        .map(img -> img.getFile().getUri())
+                        .collect(Collectors.toList()));
     }
 }

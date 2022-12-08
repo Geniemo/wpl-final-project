@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import wpl.server.payload.dto.SolveDto;
 
 import javax.persistence.*;
 
@@ -34,5 +35,9 @@ public class Solve {
         solve.setUser(user);
         solve.setQuiz(quiz);
         return solve;
+    }
+
+    public static SolveDto convertToDto(Solve solve) {
+        return new SolveDto(Quiz.convertToDto(solve.getQuiz()), solve.getStatus().getCode());
     }
 }
