@@ -22,7 +22,6 @@ public class UserController {
     @PostMapping("/join")
     @Transactional
     public ResponseEntity<Message> join(@RequestBody @Valid JoinRequest joinRequest) {
-        System.out.println("joinRequest = " + joinRequest);
         return ResponseEntity.ok(userService.join(joinRequest));
     }
 
