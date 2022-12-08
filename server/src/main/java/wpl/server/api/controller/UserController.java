@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import wpl.server.api.service.UserService;
 import wpl.server.payload.Message;
 import wpl.server.payload.request.JoinRequest;
+import wpl.server.payload.request.LoginRequest;
 
 import javax.validation.Valid;
 
@@ -23,6 +24,11 @@ public class UserController {
     public ResponseEntity<Message> join(@RequestBody @Valid JoinRequest joinRequest) {
         System.out.println("joinRequest = " + joinRequest);
         return ResponseEntity.ok(userService.join(joinRequest));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Message> login(@RequestBody @Valid LoginRequest loginRequest) {
+        return ResponseEntity.ok(userService.login(loginRequest));
     }
 
     @GetMapping("")

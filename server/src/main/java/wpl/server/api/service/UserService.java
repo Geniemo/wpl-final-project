@@ -9,6 +9,7 @@ import wpl.server.api.repository.UserRepository;
 import wpl.server.entity.User;
 import wpl.server.payload.Message;
 import wpl.server.payload.request.JoinRequest;
+import wpl.server.payload.request.LoginRequest;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +29,14 @@ public class UserService {
         User newUser = User.createUser(joinRequest.getEmail(), joinRequest.getPassword(), joinRequest.getName());
         userRepository.save(newUser);
         return new Message("success to join", null);
+    }
+
+    public Message login(LoginRequest loginRequest) {
+        Optional<User> userOptional = userRepository.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
+        if (userOptional.isEmpty()) {
+            throw new NotFoundException("cannot find user with email: " + loginRequest.getEmail() + ", password: " + loginRequest.getPassword());
+        }
+        return new Message("login success", User.convertToDto(userOptional.get()));
     }
 
     public Message allUsers() {
