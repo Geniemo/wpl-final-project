@@ -12,7 +12,7 @@ import wpl.server.payload.request.LoginRequest;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v0/member")
+@RequestMapping("/api/v0/user")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserController {
