@@ -7,11 +7,13 @@ import org.springframework.web.multipart.MultipartFile;
 import wpl.server.api.exception.NotFoundException;
 import wpl.server.api.repository.QuizImageRepository;
 import wpl.server.api.repository.QuizRepository;
-import wpl.server.entity.Quiz;
-import wpl.server.entity.QuizImage;
+import wpl.server.api.repository.SolveRepository;
+import wpl.server.api.repository.UserRepository;
+import wpl.server.entity.*;
 import wpl.server.file_storage.File;
 import wpl.server.file_storage.FileService;
 import wpl.server.payload.Message;
+import wpl.server.payload.request.SolveRequest;
 import wpl.server.payload.request.UploadQuizRequest;
 
 import java.util.Optional;
@@ -25,6 +27,8 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final FileService fileService;
     private final QuizImageRepository quizImageRepository;
+    private final UserRepository userRepository;
+    private final SolveRepository solveRepository;
 
     @Transactional
     public Message upload(UploadQuizRequest uploadQuizRequest) {
@@ -53,4 +57,26 @@ public class QuizService {
         return new Message("success to find quiz with id: " + id, Quiz.convertToDto(quizOptional.get()));
     }
 
+    @Transactional
+    public Message solve(SolveRequest solveRequest) {
+        Optional<User> userOptional = userRepository.findById(solveRequest.getUserId());
+        if (userOptional.isEmpty()) {
+            throw new NotFoundException("cannot find user with id: " + solveRequest.getUserId());
+        }
+        Optional<Quiz> quizOptional = quizRepository.findById(solveRequest.getQuizId());
+        if (quizOptional.isEmpty()) {
+            throw new NotFoundException("cannot find quiz with id: " + solveRequest.getQuizId());
+        }
+
+        Optional<Solve> solveOptional = solveRepository.findByUserAndQuiz(userOptional.get(), quizOptional.get());
+        if (solveOptional.isEmpty()) {
+            Solve solve = Solve.createSolve(userOptional.get(), quizOptional.get());
+            solve.setStatus(SolveStatus.of(solveRequest.getAnswer() == quizOptional.get().getAnswer() ? "SUCCESS" : "FAIL"));
+            solveRepository.save(solve);
+            return new Message(solve.getStatus().equals(SolveStatus.SUCCESS) ? "correct answer" : "wrong answer", Solve.convertToDto(solve));
+        } else {
+            solveOptional.get().setStatus(SolveStatus.of(solveRequest.getAnswer() == quizOptional.get().getAnswer() ? "SUCCESS" : "FAIL"));
+            return new Message(solveOptional.get().getStatus().equals(SolveStatus.SUCCESS) ? "correct answer" : "wrong answer", Solve.convertToDto(solveOptional.get()));
+        }
+    }
 }

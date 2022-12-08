@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import wpl.server.api.service.QuizService;
 import wpl.server.payload.Message;
+import wpl.server.payload.request.SolveRequest;
 import wpl.server.payload.request.UploadQuizRequest;
 
 import javax.validation.Valid;
@@ -32,5 +33,11 @@ public class QuizController {
     @GetMapping("/{id}")
     public ResponseEntity<Message> quizInfo(@PathVariable Long id) {
         return ResponseEntity.ok(quizService.quizInfo(id));
+    }
+
+    @PostMapping("/solve")
+    @Transactional
+    public ResponseEntity<Message> solve(@RequestBody @Valid SolveRequest solveRequest) {
+        return ResponseEntity.ok(quizService.solve(solveRequest));
     }
 }
