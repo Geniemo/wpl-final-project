@@ -27,6 +27,8 @@ public class Quiz {
     private Integer answer;
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuizImage> images = new ArrayList<>();
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Solve> solves = new ArrayList<>();
 
     public static Quiz createQuiz(String title, String description, Integer answer) {
         Quiz quiz = new Quiz();
@@ -41,6 +43,10 @@ public class Quiz {
                 quiz.getImages()
                         .stream()
                         .map(img -> img.getFile().getUri())
+                        .collect(Collectors.toList()),
+                quiz.getSolves()
+                        .stream()
+                        .map(Solve::convertToDto)
                         .collect(Collectors.toList()));
     }
 }

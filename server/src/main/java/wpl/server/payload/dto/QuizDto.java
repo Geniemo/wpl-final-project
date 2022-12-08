@@ -14,4 +14,5 @@ public class QuizDto {
     private String title;
     private String description;
     private List<String> images = new ArrayList<>();
+    private List<SolveDto> solves = new ArrayList<>();
 }

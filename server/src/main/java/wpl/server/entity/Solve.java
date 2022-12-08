@@ -38,6 +38,6 @@ public class Solve {
     }
 
     public static SolveDto convertToDto(Solve solve) {
-        return new SolveDto(Quiz.convertToDto(solve.getQuiz()), solve.getStatus().getCode());
+        return new SolveDto(solve.getUser().getId(), solve.getQuiz().getId(), solve.getStatus().getCode());
     }
 }

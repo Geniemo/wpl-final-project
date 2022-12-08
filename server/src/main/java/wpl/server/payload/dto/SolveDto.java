@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SolveDto {
 
-    private QuizDto quiz;
+    private Long userId;
+    private Long quizId;
     private String status;
 }
