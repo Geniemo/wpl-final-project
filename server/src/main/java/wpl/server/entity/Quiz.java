@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,6 +23,8 @@ public class Quiz {
     private String title;
     private String description;
     private Integer answer;
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuizImage> images = new ArrayList<>();
 
     public static Quiz createQuiz(String title, String description, Integer answer) {
         Quiz quiz = new Quiz();
