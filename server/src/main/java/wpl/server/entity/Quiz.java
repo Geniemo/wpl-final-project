@@ -25,7 +25,7 @@ public class Quiz {
     private String title;
     private String description;
     private Integer answer;
-    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuizImage> images = new ArrayList<>();
 
     public static Quiz createQuiz(String title, String description, Integer answer) {
