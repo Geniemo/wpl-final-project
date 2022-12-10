@@ -119,5 +119,18 @@ const makeProblem = () => {
 }
 
 const makeHistory = () => {
-
+    fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz")
+    .then((res) => res.json())
+    .then((data) => {
+        let body = document.querySelector('#body')
+        for(let i=0;i<data.data.length;i++){
+            const solves = data.data[i].solves 
+            for(let j=0;j<solves.length;j++){
+                let x = document.createElement('div')
+                x.innerHTML= solves[j].dateTime
+                body.appendChild(x)
+            }
+        }
+        console.log(data.data)
+    })
 }
