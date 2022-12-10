@@ -76,6 +76,7 @@ const makeProblem = () => {
 
         body.appendChild(img)
         
+        let c = 0
 
         for(let i=0;i<5;i++){   
             let div = document.createElement('div')
@@ -90,6 +91,10 @@ const makeProblem = () => {
             label.className="form-check-label"
             label.htmlFor=i+1
             label.innerHTML=i+1
+
+            input.addEventListener("click",() => {
+                c = i+1
+            })
             
             div.appendChild(input)
             div.appendChild(label)
@@ -101,15 +106,16 @@ const makeProblem = () => {
         but.type='submit'
         but.innerHTML="submit"
         but.addEventListener("click",()=>{
+            if(c===0) return;
             fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz/solve", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                userId: "test",
+                userId: 2,
                 quizId: pid,
-                answer: $('input[name=radio]:checked').val(),
+                answer: c,
             }),
             }).then((response) => console.log(response));
         })
