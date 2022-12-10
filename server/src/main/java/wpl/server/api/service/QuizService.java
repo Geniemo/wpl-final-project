@@ -68,15 +68,9 @@ public class QuizService {
             throw new NotFoundException("cannot find quiz with id: " + solveRequest.getQuizId());
         }
 
-        Optional<Solve> solveOptional = solveRepository.findByUserAndQuiz(userOptional.get(), quizOptional.get());
-        if (solveOptional.isEmpty()) {
-            Solve solve = Solve.createSolve(userOptional.get(), quizOptional.get());
-            solve.setStatus(SolveStatus.of(solveRequest.getAnswer() == quizOptional.get().getAnswer() ? "SUCCESS" : "FAIL"));
-            solveRepository.save(solve);
-            return new Message(solve.getStatus().equals(SolveStatus.SUCCESS) ? "correct answer" : "wrong answer", Solve.convertToDto(solve));
-        } else {
-            solveOptional.get().setStatus(SolveStatus.of(solveRequest.getAnswer() == quizOptional.get().getAnswer() ? "SUCCESS" : "FAIL"));
-            return new Message(solveOptional.get().getStatus().equals(SolveStatus.SUCCESS) ? "correct answer" : "wrong answer", Solve.convertToDto(solveOptional.get()));
-        }
+        Solve solve = Solve.createSolve(userOptional.get(), quizOptional.get());
+        solve.setStatus(SolveStatus.of(solveRequest.getAnswer().equals(quizOptional.get().getAnswer()) ? "SUCCESS" : "FAIL"));
+        solveRepository.save(solve);
+        return new Message(solve.getStatus().equals(SolveStatus.SUCCESS) ? "correct answer" : "wrong answer", Solve.convertToDto(solve));
     }
 }
