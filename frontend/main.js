@@ -61,8 +61,8 @@ const makeRanking = () => {
 }
 
 const makeProblem = () => {
-    // const pid = location.href.split('?')[1]
-    const pid = 3
+    const pid = location.href.split('=')[1]
+    // const pid = 3
 
     fetch('http://oracle.wpl.kro.kr:8080/api/v0/quiz/'+pid.toString())
     .then((res) => res.json())
@@ -138,5 +138,19 @@ const makeHistory = () => {
             }
         }
         console.log(data.data)
+    })
+}
+
+const login = () => {
+
+}
+
+const register = () => {
+    fetch("http://oracle.wpl.kro.kr:8080/api/v0/user")
+    .then((res) => res.json())
+    .then((data) => {
+        
+        console.log(data.data[0])
+        console.log(data.data.length)
     })
 }
