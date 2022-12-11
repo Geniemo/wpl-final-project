@@ -124,7 +124,8 @@ const idToName = () => {
         for(let i=0;i<data.data.length;i++){
             ret[data.data[i].userId] = {
                 name: data.data[i].name,
-                email: data.data[i].email
+                email: data.data[i].email,
+                id: data.data[i].userId,
             }
         }
     })
@@ -257,9 +258,8 @@ const registerF = ()=>{
 }
 
 const loginF = ()=>{
+    const nameDict = idToName()
     let email = document.querySelector('#email')
-    let password = document.querySelector('#password')
-
     console.log(email.value)
 
     fetch("http://oracle.wpl.kro.kr:8080/api/v0/user/login", {
@@ -279,6 +279,11 @@ const loginF = ()=>{
         }
         else{
             localStorage.setItem('email',email)
+            for(let key in nameDict){
+                if(email===nameDict[key].email){
+                    localStorage.setItem('id',key)
+                }
+            }
             location.href = './problems.html'
         }
         console.log(response.status)
@@ -290,8 +295,19 @@ const login = () => {
     but.style="cursor: pointer;"
     but.innerHTML="Login"
 
+    let password = document.querySelector('#password')
+
+    password.addEventListener('keyup',(e) => {
+        if(e.keyCode==13){
+            console.log(password.nextSibling)
+            but.click()
+        }
+    })
+
+    
     but.removeEventListener('click',registerF)    
     but.addEventListener("click",loginF)
+    
 }
 
 const register = () => {
