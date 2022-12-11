@@ -4,7 +4,7 @@ const makeProblemList = () => {
     .then((data) => {
         for(let i=0;i<data.data.length;i++){
             let div1 = document.createElement("div")
-            div1.className="card"
+            div1.className="card mb-3"
             div1.style="width: 25%;"
 
             let div2 = document.createElement("div")
@@ -141,16 +141,128 @@ const makeHistory = () => {
     })
 }
 
+
+const loginPage = () => {
+    let positionNow = 0
+    let selectLogin = document.querySelector('#login')
+    let selectRegister = document.querySelector('#register')
+    let con = document.querySelector('.container-sm')
+
+    login()
+
+    selectRegister.addEventListener('click', () => {
+        if(positionNow===1) return;
+        positionNow=1
+
+        let newDiv = document.createElement('div')
+        newDiv.className='form-floating mb-3'
+        let input = document.createElement('input')
+        input.type='text'
+        input.className='form-control'
+        input.id='name'
+        input.placeholder='name'
+        let label = document.createElement('label')
+        label.htmlFor='floatingInput'
+        label.innerHTML='Name'
+        newDiv.appendChild(input)
+        newDiv.appendChild(label)
+
+        con.insertBefore(newDiv,con.firstChild.nextSibling.nextSibling)
+
+        let email = document.querySelector('#email')
+        let password = document.querySelector('#password')
+        let name = document.querySelector('#name')
+        email.classList.remove('is-invalid')
+        password.classList.remove('is-invalid')
+        name.classList.remove('is-invalid')
+
+        register()
+    })
+    selectLogin.addEventListener('click', () => {
+        if(positionNow===0) return;
+        positionNow=0
+        con.removeChild(con.firstChild.nextSibling.nextSibling)
+        let email = document.querySelector('#email')
+        let password = document.querySelector('#password')
+        email.classList.remove('is-invalid')
+        password.classList.remove('is-invalid')
+
+        login()
+    })
+}
+
+const registerF = ()=>{
+    let email = document.querySelector('#email')
+    let password = document.querySelector('#password')
+    let name = document.querySelector('#name')
+    fetch("http://oracle.wpl.kro.kr:8080/api/v0/user/join", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+        name: name.value,
+    }),
+    }).then((response) => {
+        if(response.status!==200){
+            alert('Invalid Register')
+            email.classList.add('is-invalid')
+            password.classList.add('is-invalid')
+            name.classList.add('is-invalid')
+        }
+        else{
+            let selectLogin = document.querySelector('#login')
+            alert("Success Register!")
+            selectLogin.click()
+        }
+        console.log(response.status)
+    });
+}
+
+const loginF = ()=>{
+    let email = document.querySelector('#email')
+    let password = document.querySelector('#password')
+
+    console.log(email.value)
+
+    fetch("http://oracle.wpl.kro.kr:8080/api/v0/user/login", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+    }),
+    }).then((response) => {
+        if(response.status!==200){
+            alert('Invalid Login')
+            email.classList.add('is-invalid')
+            password.classList.add('is-invalid')
+        }
+        else{
+            location.href = './problems.html'
+        }
+        console.log(response.status)
+    });
+}
 const login = () => {
 
+    let but = document.querySelector('.p-3.mt-4.text-center')
+    but.style="cursor: pointer;"
+    but.innerHTML="Login"
+
+    but.removeEventListener('click',registerF)    
+    but.addEventListener("click",loginF)
 }
 
 const register = () => {
-    fetch("http://oracle.wpl.kro.kr:8080/api/v0/user")
-    .then((res) => res.json())
-    .then((data) => {
-        
-        console.log(data.data[0])
-        console.log(data.data.length)
-    })
+    let but = document.querySelector('.p-3.mt-4.text-center')
+    but.style="cursor: pointer;"
+    but.innerHTML="Register"
+    
+    but.removeEventListener('click',loginF)    
+    but.addEventListener("click",registerF)
 }
