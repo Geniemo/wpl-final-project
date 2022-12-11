@@ -309,7 +309,7 @@ const loginF = ()=>{
             password.classList.add('is-invalid')
         }
         else{
-            localStorage.setItem('email',email)
+            localStorage.setItem('email',email.value)
             for(let key in nameDict){
                 console.log(key)
                 if(email.value===nameDict[key].email){
@@ -400,6 +400,7 @@ const pageInit = () => {
     if(localStorage.getItem("email")!==null){
         let email = document.createElement('button')
         email.className="btn btn-outline-dark"
+        console.log(localStorage.getItem("email"))
         email.innerHTML=localStorage.getItem("email")
         document.querySelector(".d-flex").appendChild(email)
         let logout = document.createElement('button')
