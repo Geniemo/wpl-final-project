@@ -22,20 +22,6 @@ public class FileController {
 
     private final FileService fileService;
 
-//    @PostMapping("/upload")
-//    @Transactional
-//    public ResponseEntity<Message> upload(@RequestParam(value = "file") MultipartFile file) {
-//        return ResponseEntity.ok(fileService.upload(file, "test"));
-//    }
-//
-//    @PostMapping("/upload-multiple")
-//    @Transactional
-//    public ResponseEntity<List<Message>> uploadMultiple(@RequestParam(value = "files") MultipartFile[] files) {
-//        return ResponseEntity.ok(Arrays.stream(files)
-//                .map(f -> upload(f).getBody())
-//                .collect(Collectors.toList()));
-//    }
-
     @GetMapping("")
     public ResponseEntity<Resource> download(HttpServletRequest request, @RequestParam String uri) {
         Resource resource = fileService.loadAsResource(uri);
