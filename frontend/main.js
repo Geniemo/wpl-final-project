@@ -1,9 +1,34 @@
 const makeProblemList = () => {
+
+    let solves = []
+
+    fetch("http://oracle.wpl.kro.kr:8080/api/v0/user/"+localStorage.getItem('id').toString())
+    .then((res)=> res.json())
+    .then((data)=>{
+        console.log(data.data.solves)
+        solves = data.data.solves
+    })
+
+
     fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz")
     .then((res) => res.json())
     .then((data) => {
+        console.log(data)
         for(let i=0;i<data.data.length;i++){
-
+            let ck = 0
+            // console.log(data.data[i].quizId)
+            solves.forEach(x => {
+                // console.log(x)
+                if(x.quizId===data.data[i].quizId){
+                    console.log(1)
+                    if(x.status==='SUCCESS'){
+                        ck=1
+                    }
+                    else if(ck===0){
+                        ck=2
+                    }
+                }
+            })
 
             let div1 = document.createElement("div")
             div1.className="card mb-3"
@@ -25,8 +50,8 @@ const makeProblemList = () => {
 
             let but = document.createElement('a')
             but.href='./problem.html?pid='+data.data[i].quizId
-            but.className="btn btn-primary" 
-            but.innerHTML='Try'
+            but.className="btn " +(ck===0 ? "btn-primary":(ck===1?"btn-success":"btn-danger"))
+            but.innerHTML='Try ' +(ck===0 ? "":(ck===1?"(PASS)":"(FAIL)"))
             div2.appendChild(but)
 
             let x = document.querySelector('.row-cols-4')
