@@ -311,16 +311,12 @@ const loginF = ()=>{
             password.classList.add('is-invalid')
         }
         else{
-            localStorage.setItem('email',email.value)
-            Object.keys(k).forEach(key =>{
-                console.log(key)
-                if(email.value.toString()===k[key].email){
-                    localStorage.setItem('id',key)
-                }
-            })
-            location.href = './problems.html'
+            return response.json();
         }
-        console.log(response.status)
+    }).then((data) => {
+        localStorage.setItem('id', data.data.userId);
+        localStorage.setItem('email', data.data.email);
+        location.href = './problems.html'
     });
 }
 const login = () => {
