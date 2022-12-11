@@ -99,6 +99,7 @@ const makeProblem = () => {
         but.innerHTML="submit"
         but.addEventListener("click",()=>{
             if(c===0) return;
+            console.log(localStorage.getItem("id"))
             fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz/solve", {
             method: "POST",
             headers: {
@@ -110,6 +111,7 @@ const makeProblem = () => {
                 answer: c,
             }),
             }).then((response) => console.log(response));
+            location.href='./history.html'
         })
         body.appendChild(but)
 
@@ -280,7 +282,8 @@ const loginF = ()=>{
         else{
             localStorage.setItem('email',email)
             for(let key in nameDict){
-                if(email===nameDict[key].email){
+                console.log(key)
+                if(email.value===nameDict[key].email){
                     localStorage.setItem('id',key)
                 }
             }
