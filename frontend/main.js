@@ -40,15 +40,39 @@ const makeRanking = () => {
     fetch("http://oracle.wpl.kro.kr:8080/api/v0/user")
     .then((res) => res.json())
     .then((data) => {
-        for(let i=0;i<data.data.length;i++){
-            let li = document.createElement("li")
-            li.className="list-group-item"
-            li.innerHTML=(i+1).toString()
-            li.innerHTML+='. '+data.data[i].email
 
+        let rank=[]
+        data.data.forEach(x=>{
+            let correct=[]
+            x.solves.forEach(y => {
+                if(y.status==='SUCCESS' && (!correct.includes(y.quizId))){
+                    correct.push(y.quizId)
+                }
+            })
+            rank.push({
+                name: x.email,
+                cnt: correct.length
+            })
+        })
+
+        rank.sort((a,b)=>{
+            return b.cnt-a.cnt
+        })
+
+        let num=1
+        rank.forEach(x => {
+            let li = document.createElement("li")
+            li.className="list-group-item d-flex justify-content-between align-items-center"
+            li.innerHTML=num+'. '+x.name
+            num+=1
+
+            let span = document.createElement('span')
+            span.className="badge bg-primary rounded-pill"
+            li.appendChild(span)
+            span.innerHTML=x.cnt
             document.querySelector('.list-group').appendChild(li)
-        }
-        console.log(data.data)
+            console.log(x)
+        })
     })
 }
 
