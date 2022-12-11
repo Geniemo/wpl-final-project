@@ -151,7 +151,7 @@ const makeHistory = () => {
             }
         }
         tdata.sort((a,b) => {
-            return b.dateTime - a.dateTime
+            return new Date(b.dateTime) - new Date(a.dateTime)
         })
         let cnt = tdata.length
         tdata.forEach(x => {
