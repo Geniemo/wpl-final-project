@@ -55,8 +55,7 @@ const makeRanking = () => {
 
             document.querySelector('.list-group').appendChild(li)
         }
-        console.log(data.data[0])
-        console.log(data.data.length)
+        console.log(data.data)
     })
 }
 
@@ -130,7 +129,10 @@ const idToName = () => {
     .then((res) => res.json())
     .then((data) => {
         for(let i=0;i<data.data.length;i++){
-            ret[data.data[i].userId] = data.data[i].name
+            ret[data.data[i].userId] = {
+                name: data.data[i].name,
+                email: data.data[i].email
+            }
         }
     })
     return ret
@@ -162,7 +164,7 @@ const makeHistory = () => {
             tr.appendChild(th)
             cnt--;
             let td = document.createElement('td')
-            td.innerHTML=nameDict[x.userId]
+            td.innerHTML=nameDict[x.userId].name
             tr.appendChild(td)
             td = document.createElement('td')
             td.innerHTML=x.quizId
@@ -283,7 +285,7 @@ const loginF = ()=>{
             password.classList.add('is-invalid')
         }
         else{
-            localStorage.setItem('id',email)
+            localStorage.setItem('email',email)
             location.href = './problems.html'
         }
         console.log(response.status)
@@ -308,3 +310,47 @@ const register = () => {
     but.addEventListener("click",registerF)
 }
 
+const randomAll = () => {
+    fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz")
+    .then((res) => res.json())
+    .then((data) => {
+        let quizIdList = []
+        console.log(quizIdList)
+        for(let i=0;i<data.data.length;i++){
+            quizIdList.push(data.data[i].quizId)
+        }
+        let rand = Math.floor(Math.random()*quizIdList.length)
+
+        location.href='./problem.html?pid='+quizIdList[rand]
+    })
+}
+
+const randomUnsolve = () => {
+    const nameDict = idToName()
+    
+    fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz")
+    .then((res) => res.json())
+    .then((data) => {
+        let quizIdList = []
+        console.log(quizIdList)
+        for(let i=0;i<data.data.length;i++){
+            let ck=true
+            
+            data.data[i].solves.forEach(x => {
+                if(x.status==='SUCCESS'){
+                    if(nameDict[x.userId]===localStorage.getItem('name'))
+                    {
+                        ck=false
+                    }
+                }
+            })
+            if(ck){
+                quizIdList.push(data.data[i].quizId)
+            }
+
+        }
+        let rand = Math.floor(Math.random()*quizIdList.length)
+
+        location.href='./problem.html?pid='+quizIdList[rand]
+    })
+}
