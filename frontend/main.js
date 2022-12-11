@@ -137,6 +137,7 @@ const idToName = () => {
 const makeHistory = () => {
 
     const nameDict = idToName()
+    let quizIdToTitle = {}
     console.log(nameDict)
     fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz")
     .then((res) => res.json())
@@ -144,6 +145,7 @@ const makeHistory = () => {
         let tdata=[]
         for(let i=0;i<data.data.length;i++){
             const solves = data.data[i].solves 
+            quizIdToTitle[data.data[i].quizId] = data.data[i].title
             for(let j=0;j<solves.length;j++){
                 tdata.push(solves[j])
             }
@@ -163,10 +165,13 @@ const makeHistory = () => {
             td.innerHTML=nameDict[x.userId].name
             tr.appendChild(td)
             td = document.createElement('td')
-            td.innerHTML=x.quizId
+            td.innerHTML=quizIdToTitle[x.quizId]
             tr.appendChild(td)
             td = document.createElement('td')
-            td.innerHTML=x.status
+            let span = document.createElement('span')
+            span.className="badge "+ (x.status==="SUCCESS" ? "text-bg-success" : "text-bg-danger")
+            span.innerHTML=x.status=="SUCCESS" ? "Correct!" : "Incorrect"
+            td.appendChild(span)
             tr.appendChild(td)
             td = document.createElement('td')
             td.innerHTML=x.dateTime
