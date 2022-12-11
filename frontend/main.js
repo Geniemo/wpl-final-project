@@ -99,6 +99,7 @@ const makeProblem = () => {
         but.innerHTML="submit"
         but.addEventListener("click",()=>{
             if(c===0) return;
+            console.log(localStorage.getItem("id"))
             fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz/solve", {
             method: "POST",
             headers: {
@@ -110,6 +111,7 @@ const makeProblem = () => {
                 answer: c,
             }),
             }).then((response) => console.log(response));
+            location.href='./history.html'
         })
         body.appendChild(but)
 
@@ -124,7 +126,8 @@ const idToName = () => {
         for(let i=0;i<data.data.length;i++){
             ret[data.data[i].userId] = {
                 name: data.data[i].name,
-                email: data.data[i].email
+                email: data.data[i].email,
+                id: data.data[i].userId,
             }
         }
     })
@@ -134,6 +137,7 @@ const idToName = () => {
 const makeHistory = () => {
 
     const nameDict = idToName()
+    let quizIdToTitle = {}
     console.log(nameDict)
     fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz")
     .then((res) => res.json())
@@ -141,6 +145,7 @@ const makeHistory = () => {
         let tdata=[]
         for(let i=0;i<data.data.length;i++){
             const solves = data.data[i].solves 
+            quizIdToTitle[data.data[i].quizId] = data.data[i].title
             for(let j=0;j<solves.length;j++){
                 tdata.push(solves[j])
             }
@@ -160,10 +165,13 @@ const makeHistory = () => {
             td.innerHTML=nameDict[x.userId].name
             tr.appendChild(td)
             td = document.createElement('td')
-            td.innerHTML=x.quizId
+            td.innerHTML=quizIdToTitle[x.quizId]
             tr.appendChild(td)
             td = document.createElement('td')
-            td.innerHTML=x.status
+            let span = document.createElement('span')
+            span.className="badge "+ (x.status==="SUCCESS" ? "text-bg-success" : "text-bg-danger")
+            span.innerHTML=x.status=="SUCCESS" ? "Correct!" : "Incorrect"
+            td.appendChild(span)
             tr.appendChild(td)
             td = document.createElement('td')
             td.innerHTML=x.dateTime
@@ -257,9 +265,8 @@ const registerF = ()=>{
 }
 
 const loginF = ()=>{
+    const nameDict = idToName()
     let email = document.querySelector('#email')
-    let password = document.querySelector('#password')
-
     console.log(email.value)
 
     fetch("http://oracle.wpl.kro.kr:8080/api/v0/user/login", {
@@ -279,6 +286,12 @@ const loginF = ()=>{
         }
         else{
             localStorage.setItem('email',email)
+            for(let key in nameDict){
+                console.log(key)
+                if(email.value===nameDict[key].email){
+                    localStorage.setItem('id',key)
+                }
+            }
             location.href = './problems.html'
         }
         console.log(response.status)
@@ -290,8 +303,19 @@ const login = () => {
     but.style="cursor: pointer;"
     but.innerHTML="Login"
 
+    let password = document.querySelector('#password')
+
+    password.addEventListener('keyup',(e) => {
+        if(e.keyCode==13){
+            console.log(password.nextSibling)
+            but.click()
+        }
+    })
+
+    
     but.removeEventListener('click',registerF)    
     but.addEventListener("click",loginF)
+    
 }
 
 const register = () => {
