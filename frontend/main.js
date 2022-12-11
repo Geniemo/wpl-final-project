@@ -29,13 +29,6 @@ const makeProblemList = () => {
 
             let x = document.querySelector('.row-cols-4')
             x.appendChild(div1)
-            // <div class="card" style="width: 18rem;">
-            //     <div class="card-body">
-            //     <h5 class="card-title">Card title</h5>
-            //     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            //     <a href="#" class="btn btn-primary">Go somewhere</a>
-            //     </div>
-            // </div>
         }
         console.log(location.href.split('/')[4])
     })
@@ -112,7 +105,7 @@ const makeProblem = () => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                userId: 2,
+                userId: localStorage.getItem("id"),
                 quizId: pid,
                 answer: c,
             }),
@@ -338,8 +331,7 @@ const randomUnsolve = () => {
             
             data.data[i].solves.forEach(x => {
                 if(x.status==='SUCCESS'){
-                    if(nameDict[x.userId]===localStorage.getItem('name'))
-                    {
+                    if(nameDict[x.userId]===localStorage.getItem('name')){
                         ck=false
                     }
                 }
@@ -353,4 +345,21 @@ const randomUnsolve = () => {
 
         location.href='./problem.html?pid='+quizIdList[rand]
     })
+}
+
+const pageInit = () => {
+    console.log(localStorage.getItem("email"))
+    if(localStorage.getItem("email")!==null){
+        let logout = document.createElement('button')
+        logout.className="btn btn-primary"
+        logout.innerHTML="Logout"
+        logout.addEventListener("click",() => {
+            localStorage.clear()
+            location.href="./index.html"
+        })
+        document.querySelector(".d-flex").appendChild(logout)
+    }
+    else{
+        location.href="./index.html"
+    }
 }
