@@ -4,16 +4,6 @@ const makeProblemList = () => {
     .then((data) => {
         for(let i=0;i<data.data.length;i++){
 
-            let ck=0
-            const nameDict = idToName()
-            data.data[i].solves.forEach(x=>{
-                if(x.status==='FAIL'){
-                    ck=1
-                }
-                else if(x.userId.toString()===localStorage.getItem('id')){
-                    ck=2
-                }
-            })
 
             let div1 = document.createElement("div")
             div1.className="card mb-3"
@@ -35,8 +25,8 @@ const makeProblemList = () => {
 
             let but = document.createElement('a')
             but.href='./problem.html?pid='+data.data[i].quizId
-            but.className="btn " + (ck===0 ? "btn-primary":(ck===1?"btn-danger":"btn-success"))
-            but.innerHTML='Try ' + (ck===0 ? "":(ck===1?"(FAIL)":"(PASS)"))
+            but.className="btn btn-primary" 
+            but.innerHTML='Try'
             div2.appendChild(but)
 
             let x = document.querySelector('.row-cols-4')
