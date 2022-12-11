@@ -78,7 +78,7 @@ const makeProblem = () => {
         
         let c = 0
 
-        for(let i=0;i<5;i++){   
+        for(let i=0;i<4;i++){   
             let div = document.createElement('div')
             div.className="form-check"
             let input = document.createElement('input')
