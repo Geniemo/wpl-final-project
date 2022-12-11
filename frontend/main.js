@@ -124,19 +124,59 @@ const makeProblem = () => {
     })
 }
 
+const idToName = () => {
+    ret = {}
+    fetch("http://oracle.wpl.kro.kr:8080/api/v0/user")
+    .then((res) => res.json())
+    .then((data) => {
+        for(let i=0;i<data.data.length;i++){
+            ret[data.data[i].userId] = data.data[i].name
+        }
+    })
+    return ret
+}
+
 const makeHistory = () => {
+
+    const nameDict = idToName()
+    console.log(nameDict)
     fetch("http://oracle.wpl.kro.kr:8080/api/v0/quiz")
     .then((res) => res.json())
     .then((data) => {
-        let body = document.querySelector('#body')
+        let tdata=[]
         for(let i=0;i<data.data.length;i++){
             const solves = data.data[i].solves 
             for(let j=0;j<solves.length;j++){
-                let x = document.createElement('div')
-                x.innerHTML= solves[j].dateTime
-                body.appendChild(x)
+                tdata.push(solves[j])
             }
         }
+        tdata.sort((a,b) => {
+            return b.dateTime - a.dateTime
+        })
+        let cnt = tdata.length
+        tdata.forEach(x => {
+            let tr = document.createElement('tr')
+            let th = document.createElement('th')
+            th.scope = "row"
+            th.innerHTML=cnt
+            tr.appendChild(th)
+            cnt--;
+            let td = document.createElement('td')
+            td.innerHTML=nameDict[x.userId]
+            tr.appendChild(td)
+            td = document.createElement('td')
+            td.innerHTML=x.quizId
+            tr.appendChild(td)
+            td = document.createElement('td')
+            td.innerHTML=x.status
+            tr.appendChild(td)
+            td = document.createElement('td')
+            td.innerHTML=x.dateTime
+            tr.appendChild(td)
+            document.querySelector('tbody').appendChild(tr)
+
+            
+        })
         console.log(data.data)
     })
 }
@@ -243,6 +283,7 @@ const loginF = ()=>{
             password.classList.add('is-invalid')
         }
         else{
+            localStorage.setItem('id',email)
             location.href = './problems.html'
         }
         console.log(response.status)
@@ -266,3 +307,4 @@ const register = () => {
     but.removeEventListener('click',loginF)    
     but.addEventListener("click",registerF)
 }
+
