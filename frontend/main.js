@@ -3,6 +3,18 @@ const makeProblemList = () => {
     .then((res) => res.json())
     .then((data) => {
         for(let i=0;i<data.data.length;i++){
+
+            let ck=0
+            const nameDict = idToName()
+            data.data[i].solves.forEach(x=>{
+                if(x.status==='FAIL'){
+                    ck=1
+                }
+                else if(x.userId.toString()===localStorage.getItem('id')){
+                    ck=2
+                }
+            })
+
             let div1 = document.createElement("div")
             div1.className="card mb-3"
             div1.style="width: 25%;"
@@ -23,8 +35,8 @@ const makeProblemList = () => {
 
             let but = document.createElement('a')
             but.href='./problem.html?pid='+data.data[i].quizId
-            but.className="btn btn-primary"
-            but.innerHTML='Try'
+            but.className="btn " + (ck===0 ? "btn-primary":(ck===1?"btn-danger":"btn-success"))
+            but.innerHTML='Try ' + (ck===0 ? "":(ck===1?"(FAIL)":"(PASS)"))
             div2.appendChild(but)
 
             let x = document.querySelector('.row-cols-4')
@@ -143,7 +155,7 @@ const makeProblem = () => {
 }
 
 const idToName = () => {
-    ret = {}
+    const ret = {}
     fetch("http://oracle.wpl.kro.kr:8080/api/v0/user")
     .then((res) => res.json())
     .then((data) => {
@@ -289,7 +301,7 @@ const registerF = ()=>{
 }
 
 const loginF = ()=>{
-    const nameDict = idToName()
+    let k = idToName()
     let email = document.querySelector('#email')
     console.log(email.value)
 
@@ -310,12 +322,12 @@ const loginF = ()=>{
         }
         else{
             localStorage.setItem('email',email.value)
-            for(let key in nameDict){
+            Object.keys(k).forEach(key =>{
                 console.log(key)
-                if(email.value===nameDict[key].email){
+                if(email.value.toString()===k[key].email){
                     localStorage.setItem('id',key)
                 }
-            }
+            })
             location.href = './problems.html'
         }
         console.log(response.status)
@@ -379,7 +391,7 @@ const randomUnsolve = () => {
             
             data.data[i].solves.forEach(x => {
                 if(x.status==='SUCCESS'){
-                    if(nameDict[x.userId]===localStorage.getItem('name')){
+                    if(nameDict[x.userId].email===localStorage.getItem('email')){
                         ck=false
                     }
                 }
